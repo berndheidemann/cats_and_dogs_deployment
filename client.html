@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>predict cat vs dog</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+
+        $(document).on('change', '#img', function() {
+              var myFile = $('#img').prop('files');
+              var property = myFile[0];
+
+              $("#preview").attr("src", URL.createObjectURL(property));
+              console.log(property.name);
+              var image_name = property.name;
+              var image_extension = image_name.split('.').pop().toLowerCase();
+              console.log(image_extension);
+              var url = 'http://localhost:8081/predict';
+              if (jQuery.inArray(image_extension, ['jpg', 'jpeg', 'png']) == -1) {
+                $('#msg').html('Invalid image file');
+                return false;
+              }
+              // var form_data = new FormData();
+              // form_data.append("file", property);
+              // console.log("property to form data: ", property);
+              // console.log("form data: ", form_data);
+              var form = $("form");
+              $.ajax({
+                url: url,
+                method: 'POST',
+                data: new FormData(document.getElementById("form")),
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend: function() {
+                  $('#msg').html('Loading......');
+                },
+                success: function(data) {
+                  $('#msg').html(data);
+                }
+             });
+    });
+
+
+</script>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<form id="form" action="" method="post">
+        <input type="file" id="img" name="img">
+</form>
+<span id="msg" style="color:red; font-size: 40px;"></span><br/>
+<img src="upload.png" id="preview" alt="avatar">
+
+</body>
+</html>
